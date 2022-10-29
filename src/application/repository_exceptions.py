@@ -1,4 +1,4 @@
-from typing import Type, Any
+from typing import Type
 from src.domain.utils import Entity, Id
 
 
