@@ -1,4 +1,3 @@
-from src.domain.book.value_objects import Borrowing
 from src.domain.utils import Id, Quantity
 
 
@@ -9,13 +8,13 @@ class Book:
         title: str,
         inventory_quantity: Quantity,
         summary: str | None,
-        borrowings: Borrowing,
-    ):
+        borrowing_ids: list[Id],
+    ) -> None:
         self._id = id_
         self._title = title
         self._inventory_quantity = inventory_quantity
         self._summary = summary
-        self._borrowings = borrowings
+        self._borrowing_ids = borrowing_ids
 
     @property
     def id(self) -> Id:
@@ -34,5 +33,5 @@ class Book:
         return self._summary
 
     @property
-    def borrowings(self) -> Borrowing:
-        return self._borrowings
+    def borrowing_ids(self) -> list[Id]:
+        return self._borrowing_ids
