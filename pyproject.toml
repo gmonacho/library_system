@@ -1,0 +1,27 @@
+[tool.poetry]
+name = "library-system"
+version = "0.1.0"
+description = ""
+authors = ["gmonacho <gaelmonach123@live.fr>"]
+readme = "README.md"
+packages = [{include = "library_system"}]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+
+
+[tool.poetry.group.dev.dependencies]
+black = "^22.10.0"
+mypy = "^0.982"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.mypy]
+files = "src/"
+strict = true
+
+[tool.black]
+line-length = 120
+include = '\.pyi?$'
