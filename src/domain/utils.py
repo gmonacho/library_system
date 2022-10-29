@@ -1,14 +1,10 @@
 import abc
-from typing import Self, SupportsInt
+from typing import SupportsInt
 
 
 class Id(abc.ABC):
     @abc.abstractmethod
     def __str__(self) -> str:
-        pass
-
-    @abc.abstractmethod
-    def from_string(self) -> Self:
         pass
 
 
