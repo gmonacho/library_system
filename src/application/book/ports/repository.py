@@ -1,5 +1,5 @@
 import abc
-from src.domain.book.root import Book
+from src.domain.book.book import Book
 from src.domain.utils import Id
 
 

@@ -1,6 +1,6 @@
 from src.application.book.ports.repository import BookRepository
 from src.application.book.requests import BookCreationRequest
-from src.domain.book.root import Book
+from src.domain.book.book import Book
 
 
 class BookCreator:
@@ -13,6 +13,6 @@ class BookCreator:
             title=book_creation_request.title,
             inventory_quantity=book_creation_request.inventory_quantity,
             summary=book_creation_request.summary,
-            borrowing_ids=[],
+            borrowings=[],
         )
         self._book_repository.create(book)
