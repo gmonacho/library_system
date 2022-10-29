@@ -15,4 +15,7 @@ class BookUpdater:
             raise BadRequestException("Book id does not belong to an existing entity") from err
         book.title = book_update_request.title
         book.summary = book_update_request.summary
+        if book_update_request.inventory_quantity < len(book.borrowings):
+            raise BadRequestException("New inventory quantity is lower than currently being borrowed book count")
+        book.inventory_quantity = book_update_request.inventory_quantity
         self._book_repository.update(book)

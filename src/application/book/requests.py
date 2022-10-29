@@ -14,7 +14,8 @@ class BookCreationRequest:
 class BookUpdateRequest:
     id: Id
     title: str
-    summary: str | None
+    inventory_quantity: Quantity
+    summary: str | None = None
 
 
 @dataclass(frozen=True)
