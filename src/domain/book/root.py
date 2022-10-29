@@ -1,7 +1,7 @@
-from src.domain.utils import Id, Quantity
+from src.domain.utils import Id, Quantity, Entity
 
 
-class Book:
+class Book(Entity):
     def __init__(
         self,
         id_: Id,
@@ -24,6 +24,10 @@ class Book:
     def title(self) -> str:
         return self._title
 
+    @title.setter
+    def title(self, value: str) -> None:
+        self._title = value
+
     @property
     def inventory_quantity(self) -> Quantity:
         return self._inventory_quantity
@@ -31,6 +35,10 @@ class Book:
     @property
     def summary(self) -> str | None:
         return self._summary
+
+    @summary.setter
+    def summary(self, value: str | None) -> None:
+        self._summary = value
 
     @property
     def borrowing_ids(self) -> list[Id]:

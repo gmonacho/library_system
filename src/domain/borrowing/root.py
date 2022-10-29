@@ -1,8 +1,8 @@
 import datetime
-from src.domain.utils import Id
+from src.domain.utils import Id, Entity
 
 
-class Borrowing:
+class Borrowing(Entity):
     def __init__(
         self,
         id_: Id,

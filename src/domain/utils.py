@@ -12,6 +12,13 @@ class Id(abc.ABC):
         pass
 
 
+class Entity(abc.ABC):
+    @property
+    @abc.abstractmethod
+    def id(self) -> Id:
+        pass
+
+
 class Quantity(int):
     def __init__(self, x: SupportsInt):
         self._x = int(x)
