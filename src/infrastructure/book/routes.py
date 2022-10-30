@@ -7,7 +7,7 @@ from src.application.book.deleter import BookDeleter
 from src.application.book.requests import BookCreationRequest, BookDeletionRequest, BookUpdateRequest
 from src.application.book.updater import BookUpdater
 from src.infrastructure.book._ean13 import Ean13
-from src.infrastructure.book.in_memory_repositor import BookInMemoryRepository
+from src.infrastructure.book.database_repository import BookDatabaseRepository
 
 book_api = Blueprint("book_api", __name__)
 
@@ -38,12 +38,8 @@ def create(body: PostBookBody) -> PostBookResponse:
         inventory_quantity=Quantity(body.inventory_quantity),
         summary=body.summary,
     )
-    BookCreator(BookInMemoryRepository()).create(book_creation_request)
+    BookCreator(BookDatabaseRepository()).create(book_creation_request)
     return PostBookResponse()
-
-
-class DeleteBookBody(pydantic.BaseModel):
-    barcode: str
 
 
 class DeleteBookResponse(pydantic.BaseModel):
@@ -51,20 +47,19 @@ class DeleteBookResponse(pydantic.BaseModel):
 
 
 @book_api.delete("/book/<string:barcode>")
-@flask_pydantic.validate(body=DeleteBookBody, on_success_status=200)
-def delete(body: DeleteBookBody) -> DeleteBookResponse:
+@flask_pydantic.validate(on_success_status=200)
+def delete(barcode: str) -> DeleteBookResponse:
 
     try:
-        ean = Ean13(body.barcode)
+        ean = Ean13(barcode)
     except ValueError as err:
         raise ValueError("barcode format is invalid") from err
     book_deletion_request = BookDeletionRequest(id=ean)
-    BookDeleter(BookInMemoryRepository()).delete(book_deletion_request)
+    BookDeleter(BookDatabaseRepository()).delete(book_deletion_request)
     return DeleteBookResponse()
 
 
 class UpdateBookBody(pydantic.BaseModel):
-    barcode: str
     title: str
     inventory_quantity: int
     summary: str
@@ -76,10 +71,10 @@ class UpdateBookResponse(pydantic.BaseModel):
 
 @book_api.put("/book/<string:barcode>")
 @flask_pydantic.validate(body=UpdateBookBody, on_success_status=200)
-def update(body: UpdateBookBody) -> UpdateBookResponse:
+def update(barcode: str, body: UpdateBookBody) -> UpdateBookResponse:
 
     try:
-        ean = Ean13(body.barcode)
+        ean = Ean13(barcode)
     except ValueError as err:
         raise ValueError("barcode format is invalid") from err
 
@@ -89,5 +84,5 @@ def update(body: UpdateBookBody) -> UpdateBookResponse:
         inventory_quantity=Quantity(body.inventory_quantity),
         summary=body.summary,
     )
-    BookUpdater(BookInMemoryRepository()).update(book_update_request)
+    BookUpdater(BookDatabaseRepository()).update(book_update_request)
     return UpdateBookResponse()
