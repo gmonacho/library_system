@@ -50,13 +50,6 @@ class Book(Entity):
     def borrowings(self) -> set[Borrowing]:
         return self._borrowings
 
-    # def retrieve_borrowing(self, customer_id: str) -> Borrowing:
-    #     """
-    #     :param customer_id:
-    #     :return: borrowing corresponding to given customer_id
-    #     :raises CannotRetrieveBorrowing: if there is no borrowing corresponding to specified customer_id
-    #     """
-
     def add_borrowing(self, borrowing: Borrowing) -> None:
         if len(self._borrowings) == self._inventory_quantity:
             raise ValueError("Every copies of this books are already being borrow")
