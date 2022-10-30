@@ -1,5 +1,6 @@
 import flask
 from logging.config import dictConfig
+from src.infrastructure.book.borrowing.routes import borrowing_api
 from src.infrastructure.book.routes import book_api
 from src.infrastructure.orm import Base, engine
 
@@ -25,6 +26,7 @@ dictConfig(
 app = flask.Flask(__name__)
 
 app.register_blueprint(book_api)
+app.register_blueprint(borrowing_api)
 
 Base.metadata.create_all(engine)
 
