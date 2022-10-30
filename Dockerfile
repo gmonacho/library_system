@@ -8,5 +8,4 @@ COPY . /app/
 
 RUN poetry install
 
-#CMD ["tail", "-f", "/dev/null"]
 CMD ["poetry", "run", "python", "-m", "src"]
