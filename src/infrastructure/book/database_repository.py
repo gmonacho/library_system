@@ -27,20 +27,22 @@ class BookDatabaseRepository(BookRepository):
 
     def update(self, book: Book) -> None:
         with Session(engine) as session:
-            session.execute(
-                update(BookDbo)
-                .where(BookDbo.library_id == str(book.id))
-                .values(
-                    title=book.title,
-                    inventory_quantity=book.inventory_quantity,
-                    summary=book.summary,
-                )
-            )
+            if not (rows := session.execute(select(BookDbo).where(BookDbo.library_id == str(book.id))).first()):
+                raise CannotRetrieveEntity(Book, book.id)
+            book_dbo: BookDbo = rows[0]
+            book_dbo.library_id = str(book.id)
+            book_dbo.title = book.title
+            book_dbo.inventory_quantity = book.inventory_quantity
+            book_dbo.summary = book.summary
+            book_dbo.borrowings = [BorrowingDbo(customer_id=br.customer_id) for br in book.borrowings]
             session.commit()
 
     def delete(self, book_id: Id) -> None:
         with Session(engine) as session:
-            session.execute(delete(BookDbo).where(BookDbo.library_id == str(book_id)))
+            if not (rows := session.execute(select(BookDbo).where(BookDbo.library_id == str(book_id))).first()):
+                raise CannotRetrieveEntity(Book, book_id)
+            book_dbo: BookDbo = rows[0]
+            session.delete(book_dbo)
             session.commit()
 
     def retrieve(self, book_id: Id) -> Book:

@@ -15,4 +15,6 @@ class BookDbo(Base):
     title = Column(String, nullable=False)
     inventory_quantity = Column(String, nullable=False)
     summary = Column(String, nullable=False)
-    borrowings: Mapped[List["BorrowingDbo"]] = relationship("BorrowingDbo", back_populates="book")
+    borrowings: Mapped[List["BorrowingDbo"]] = relationship(
+        "BorrowingDbo", back_populates="book", cascade="all, delete-orphan"
+    )
