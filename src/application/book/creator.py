@@ -13,6 +13,6 @@ class BookCreator:
             title=book_creation_request.title,
             inventory_quantity=book_creation_request.inventory_quantity,
             summary=book_creation_request.summary,
-            borrowings=[],
+            borrowings=set(),
         )
         self._book_repository.create(book)
