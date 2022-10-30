@@ -40,10 +40,10 @@ class BookDatabaseRepository(BookRepository):
 
     def delete(self, book_id: Id) -> None:
         with Session(engine) as session:
-            session.execute(delete(Book).where(BookDbo.library_id == book_id))
+            session.execute(delete(BookDbo).where(BookDbo.library_id == str(book_id)))
+            session.commit()
 
     def retrieve(self, book_id: Id) -> Book:
-        logging.info("PUETPUET")
         with Session(engine) as session:
             if not (rows := session.execute(select(BookDbo).where(BookDbo.library_id == str(book_id))).first()):
                 raise CannotRetrieveEntity(Book, book_id)
