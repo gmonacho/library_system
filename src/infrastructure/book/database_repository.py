@@ -1,8 +1,9 @@
-import logging
-from sqlalchemy import select, update, delete
+import psycopg2.errors
+from psycopg2.errorcodes import UNIQUE_VIOLATION
+from sqlalchemy import select
 from sqlalchemy.orm import Session
 from src.application.book.ports.repository import BookRepository
-from src.application.repository_exceptions import CannotRetrieveEntity
+from src.application.repository_exceptions import CannotRetrieveEntity, EntityAlreadyExists
 from src.domain.book.book import Book
 from src.domain.book.borrowing import Borrowing
 from src.domain.utils import Id, Quantity
@@ -23,7 +24,10 @@ class BookDatabaseRepository(BookRepository):
                 borrowings=[BorrowingDbo(customer_id=br.customer_id) for br in book.borrowings],
             )
             session.add(book_dbo)
-            session.commit()
+            try:
+                session.commit()
+            except psycopg2.errors.lookup(UNIQUE_VIOLATION) as err:
+                raise EntityAlreadyExists(Book, book.id) from err
 
     def update(self, book: Book) -> None:
         with Session(engine) as session:
