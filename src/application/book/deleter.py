@@ -1,4 +1,3 @@
-import logging
 from src.application.book.ports.repository import BookRepository
 from src.application.book.requests import BookDeletionRequest
 from src.application.exceptions import BadRequestException
@@ -14,6 +13,6 @@ class BookDeleter:
             book = self._book_repository.retrieve(book_deletion_request.id)
         except CannotRetrieveEntity as err:
             raise BadRequestException("Book id does not belong to an existing entity") from err
-        if book.borrowing_ids:
+        if book.borrowings:
             raise BadRequestException("At least one copy of this book is currently in borrowing")
         self._book_repository.delete(book.id)
