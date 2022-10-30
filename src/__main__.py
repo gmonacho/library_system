@@ -1,6 +1,7 @@
 import flask
 from logging.config import dictConfig
 from src.infrastructure.book.routes import book_api
+from src.infrastructure.orm import Base, engine
 
 dictConfig(
     {
@@ -24,5 +25,7 @@ dictConfig(
 app = flask.Flask(__name__)
 
 app.register_blueprint(book_api)
+
+Base.metadata.create_all(engine)
 
 app.run(host="0.0.0.0", debug=True)
