@@ -1,0 +1,35 @@
+[tool.poetry]
+name = "library-system"
+version = "0.1.0"
+description = ""
+authors = ["gmonacho <gaelmonach123@live.fr>"]
+readme = "README.md"
+packages = [{include = "src"}]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+flask = "^2.2.2"
+sqlalchemy = {extras = ["mypy"], version = "^1.4.42"}
+flask-pydantic = "^0.11.0"
+barcodenumber = "^0.5.0"
+pydantic = {extras = ["mypy"], version = "^1.10.2"}
+#dotenv = "^0.0.5"
+psycopg2-binary = "^2.9.5"
+
+
+[tool.poetry.group.dev.dependencies]
+black = "^22.10.0"
+mypy = "^0.982"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.mypy]
+files = "src/"
+strict = true
+plugins = 'pydantic.mypy'
+
+[tool.black]
+line-length = 120
+include = '\.pyi?$'
