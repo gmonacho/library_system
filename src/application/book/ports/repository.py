@@ -39,3 +39,7 @@ class BookRepository(abc.ABC):
         :raise CannotRetrieveEntity: if entity of specified id does not exist
         """
         pass
+
+    @abc.abstractmethod
+    def list_all(self) -> list[Book]:
+        pass

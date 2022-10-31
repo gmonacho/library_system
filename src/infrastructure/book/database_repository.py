@@ -61,3 +61,17 @@ class BookDatabaseRepository(BookRepository):
                 summary=str(book_dbo.summary),
                 borrowings={Borrowing(str(br_dbo.customer_id)) for br_dbo in book_dbo.borrowings},
             )
+
+    def list_all(self) -> list[Book]:
+        with Session(engine) as session:
+            book_dbos = [dbo for res in session.execute(select(BookDbo)).all() for dbo in res]
+            return [
+                Book(
+                    id_=Ean13(str(dbo.library_id)),
+                    title=str(dbo.title),
+                    inventory_quantity=Quantity(int(dbo.inventory_quantity)),
+                    summary=str(dbo.summary),
+                    borrowings={Borrowing(str(br_dbo.customer_id)) for br_dbo in dbo.borrowings},
+                )
+                for dbo in book_dbos
+            ]

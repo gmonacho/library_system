@@ -48,6 +48,30 @@ def retrieve(barcode: str) -> GetBookResponse:
     )
 
 
+class ListBooksResponse(pydantic.BaseModel):
+    books: list[GetBookResponse]
+
+
+@book_api.get("/book")
+@flask_pydantic.validate()
+def list_all() -> ListBooksResponse:
+    book_retrieve_responses = BookReader(BookDatabaseRepository()).list_all()
+    return ListBooksResponse(
+        books=[
+            GetBookResponse(
+                barcode=str(book_retrieve_response.id),
+                title=book_retrieve_response.title,
+                summary=book_retrieve_response.summary,
+                inventory_quantity=book_retrieve_response.inventory_quantity,
+                borrowings=[
+                    GetBorrowingResponse(customer_id=br.customer_id) for br in book_retrieve_response.borrowings
+                ],
+            )
+            for book_retrieve_response in book_retrieve_responses
+        ]
+    )
+
+
 class PostBookResponse(pydantic.BaseModel):
     pass
 

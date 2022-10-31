@@ -30,3 +30,6 @@ class BookInMemoryRepository(BookRepository):
             return next(book for book in self._books if book.id == book_id)
         except StopIteration as err:
             raise CannotRetrieveEntity(entity_type=Book, id_=book_id) from err
+
+    def list_all(self) -> list[Book]:
+        return self._books

@@ -21,3 +21,16 @@ class BookReader:
             summary=book.summary,
             borrowings=[BorrowingResponse(br.customer_id) for br in book.borrowings],
         )
+
+    def list_all(self) -> list[BookRetrieveResponse]:
+        books = self._book_repository.list_all()
+        return [
+            BookRetrieveResponse(
+                id=book.id,
+                title=book.title,
+                inventory_quantity=book.inventory_quantity,
+                summary=book.summary,
+                borrowings=[BorrowingResponse(br.customer_id) for br in book.borrowings],
+            )
+            for book in books
+        ]
