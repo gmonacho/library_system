@@ -21,3 +21,8 @@ class BookUpdateRequest:
 @dataclass(frozen=True)
 class BookDeletionRequest:
     id: Id
+
+
+@dataclass(frozen=True)
+class BookRetrieveRequest:
+    id: Id

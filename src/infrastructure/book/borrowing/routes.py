@@ -10,6 +10,10 @@ from src.infrastructure.book.database_repository import BookDatabaseRepository
 borrowing_api = Blueprint("borrowing_api", __name__)
 
 
+class GetBorrowingResponse(pydantic.BaseModel):
+    customer_id: str
+
+
 class PostBorrowingBody(pydantic.BaseModel):
     customer_id: str
 

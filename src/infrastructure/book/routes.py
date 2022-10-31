@@ -1,15 +1,55 @@
 import pydantic
 import flask_pydantic
 from flask import Blueprint
+from src.application.book.reader import BookReader
 from src.domain.utils import Quantity
 from src.application.book.creator import BookCreator
 from src.application.book.deleter import BookDeleter
-from src.application.book.requests import BookCreationRequest, BookDeletionRequest, BookUpdateRequest
+from src.application.book.requests import (
+    BookCreationRequest,
+    BookDeletionRequest,
+    BookUpdateRequest,
+    BookRetrieveRequest,
+)
 from src.application.book.updater import BookUpdater
 from src.infrastructure.book._ean13 import Ean13
+from src.infrastructure.book.borrowing.routes import GetBorrowingResponse
 from src.infrastructure.book.database_repository import BookDatabaseRepository
 
 book_api = Blueprint("book_api", __name__)
+
+
+class GetBookResponse(pydantic.BaseModel):
+    barcode: str
+    title: str
+    summary: str | None
+    inventory_quantity: int
+    borrowings: list[GetBorrowingResponse]
+
+
+@book_api.get("/book/<string:barcode>")
+@flask_pydantic.validate()
+def retrieve(barcode: str) -> GetBookResponse:
+    try:
+        ean = Ean13(barcode)
+    except ValueError as err:
+        raise ValueError("barcode format is invalid") from err
+
+    book_retrieve_response = BookReader(BookDatabaseRepository()).retrieve(
+        book_retrieve_requests=BookRetrieveRequest(id=ean)
+    )
+
+    return GetBookResponse(
+        barcode=str(book_retrieve_response.id),
+        title=book_retrieve_response.title,
+        summary=book_retrieve_response.summary,
+        inventory_quantity=book_retrieve_response.inventory_quantity,
+        borrowings=[GetBorrowingResponse(customer_id=br.customer_id) for br in book_retrieve_response.borrowings],
+    )
+
+
+class PostBookResponse(pydantic.BaseModel):
+    pass
 
 
 class PostBookBody(pydantic.BaseModel):
@@ -17,10 +57,6 @@ class PostBookBody(pydantic.BaseModel):
     title: str
     inventory_quantity: pydantic.conint(ge=-1)
     summary: str
-
-
-class PostBookResponse(pydantic.BaseModel):
-    pass
 
 
 @book_api.post("/book")
